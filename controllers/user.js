@@ -47,5 +47,16 @@ export default {
           }
     },
 
-    onDeleteUserById: async (req, res) => { },
+    // function to delete a user given UUID
+    onDeleteUserById: async (req, res) => { 
+        try {
+            const user = await UserModel.deleteByUserById(req.params.id);
+            return res.status(200).json({ 
+              success: true, 
+              message: `Deleted a count of ${user.deletedCount} user.` 
+            });
+        } catch (error) {
+            return res.status(500).json({ success: false, error: error })
+        }
+    },
 }

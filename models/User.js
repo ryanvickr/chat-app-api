@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// function will return all users
+// function will return all users as type
 userSchema.statics.getUsers = async function () {
   try {
     const users = await this.find();
@@ -33,7 +33,7 @@ userSchema.statics.getUsers = async function () {
   }
 }
 
-// function to retrive a user given UUID
+// function to retrive a user given UUID as type
 userSchema.statics.getUserById = async function (id) {
   try {
     const user = await this.findOne({ _id: id });
@@ -53,6 +53,16 @@ userSchema.statics.createUser = async function (
   try {
     const user = await this.create({ firstName, lastName, type });
     return user;
+  } catch (error) {
+    throw error;
+  }
+}
+
+// function to delete a user given UUID as type
+userSchema.statics.deleteByUserById = async function (id) {
+  try {
+    const result = await this.remove({ _id: id });
+    return result;
   } catch (error) {
     throw error;
   }
