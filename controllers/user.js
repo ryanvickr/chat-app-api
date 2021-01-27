@@ -4,7 +4,15 @@ import makeValidation from '@withvoid/make-validation';
 import UserModel, { USER_TYPES } from '../models/User.js';
 
 export default {
-    onGetAllUsers: async (req, res) => { },
+    // function will return all users
+    onGetAllUsers: async (req, res) => {
+        try {
+            const users = await UserModel.getUsers();
+            return res.status(200).json({ success: true, users });
+        } catch (error) {
+            return res.status(500).json({ success: false, error: error })
+        }
+    },
 
     // function will retrieve a user by their UUID
     onGetUserById: async (req, res) => {
@@ -16,7 +24,7 @@ export default {
         }
     },
 
-    // this function will validate and create a new user given creds
+    // function will validate and create a new user given creds
     onCreateUser: async (req, res) => {
         try {
             // first make sure all fields are valid.

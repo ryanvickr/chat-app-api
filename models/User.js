@@ -23,6 +23,16 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+// function will return all users
+userSchema.statics.getUsers = async function () {
+  try {
+    const users = await this.find();
+    return users;
+  } catch (error) {
+    throw error;
+  }
+}
+
 // function to retrive a user given UUID
 userSchema.statics.getUserById = async function (id) {
   try {
