@@ -5,7 +5,16 @@ import UserModel, { USER_TYPES } from '../models/User.js';
 
 export default {
     onGetAllUsers: async (req, res) => { },
-    onGetUserById: async (req, res) => { },
+
+    // function will retrieve a user by their UUID
+    onGetUserById: async (req, res) => {
+        try {
+            const user = await UserModel.getUserById(req.params.id);
+            return res.status(200).json({ success: true, user });
+        } catch (error) {
+            return res.status(500).json({ success: false, error: error })
+        }
+    },
 
     // this function will validate and create a new user given creds
     onCreateUser: async (req, res) => {

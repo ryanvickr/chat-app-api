@@ -23,11 +23,22 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+// function to retrive a user given UUID
+userSchema.statics.getUserById = async function (id) {
+  try {
+    const user = await this.findOne({ _id: id });
+    if (!user) throw ({ error: 'No user with this id found' });
+    return user;
+  } catch (error) {
+    throw error;
+  }
+}
+
 // function to return a new user type
 userSchema.statics.createUser = async function (
 	firstName, 
-    	lastName, 
-    	type
+  lastName, 
+  type
 ) {
   try {
     const user = await this.create({ firstName, lastName, type });
