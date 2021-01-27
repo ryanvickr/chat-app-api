@@ -6,6 +6,7 @@ export const USER_TYPES = {
   SUPPORT: "support",
 };
 
+// defining what the user table looks like
 const userSchema = new mongoose.Schema(
   {
     _id: {
