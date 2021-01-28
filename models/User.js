@@ -44,6 +44,16 @@ userSchema.statics.getUserById = async function (id) {
   }
 }
 
+// get multiple users by UUIDs
+userSchema.statics.getUserByIds = async function (ids) {
+  try {
+    const users = await this.find({ _id: { $in: ids } });
+    return users;
+  } catch (error) {
+    throw error;
+  }
+}
+
 // function to return a new user type
 userSchema.statics.createUser = async function (
 	firstName, 

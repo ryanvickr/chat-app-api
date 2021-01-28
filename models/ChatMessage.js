@@ -40,6 +40,7 @@ const chatMessageSchema = new mongoose.Schema(
   }
 );
 
+// this will send a message
 chatMessageSchema.statics.createPostInChatRoom = async function (chatRoomId, message, postedByUser) {
   try {
     const post = await this.create({
@@ -105,6 +106,54 @@ chatMessageSchema.statics.createPostInChatRoom = async function (chatRoomId, mes
   } catch (error) {
     throw error;
   }
+}
+
+// function returns a conversation given a chat room ID
+chatMessageSchema.statics.getConversationByRoomId = async function (chatRoomId, options = {}) {
+    try {
+      return this.aggregate([
+        { $match: { chatRoomId } },
+        { $sort: { createdAt: -1 } },
+        // do a join on another table called users, and 
+        // get me a user whose _id = postedByUser
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'postedByUser',
+            foreignField: '_id',
+            as: 'postedByUser',
+          }
+        },
+        { $unwind: "$postedByUser" },
+        // apply pagination
+        { $skip: options.page * options.limit },
+        { $limit: options.limit },
+        { $sort: { createdAt: 1 } },
+      ]);
+    } catch (error) {
+      throw error;
+    }
+}
+
+chatMessageSchema.statics.markMessageRead = async function (chatRoomId, currentUserOnlineId) {
+    try {
+      return this.updateMany(
+        {
+          chatRoomId,
+          'readByRecipients.readByUserId': { $ne: currentUserOnlineId }
+        },
+        {
+          $addToSet: {
+            readByRecipients: { readByUserId: currentUserOnlineId }
+          }
+        },
+        {
+          multi: true
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
 }
 
 export default mongoose.model("ChatMessage", chatMessageSchema);
